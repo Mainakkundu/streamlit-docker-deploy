@@ -1,2 +1,2 @@
 # streamlit-docker-deploy
-Docker deployment of ab testing app 
+Docker deployment of ab testing app for Campaign perfromance analysis 
