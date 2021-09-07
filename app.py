@@ -7,7 +7,7 @@ import seaborn as sns
 st.set_option('deprecation.showPyplotGlobalUse', False)
 import os
 from statsmodels.tsa.arima_process import ArmaProcess
-from causalimpact import CausalImpact
+#from causalimpact import CausalImpact
 from scipy import stats
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -21,7 +21,7 @@ from numpy import nanmean
 import pandas as pd
 import statsmodels.stats.api as sms
 from scipy import stats as sc
-from causalimpact import CausalImpact
+#from causalimpact import CausalImpact
 from statsmodels.formula.api import ols
 from PIL import Image
 import statistics
