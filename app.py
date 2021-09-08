@@ -21,7 +21,7 @@ from numpy import nanmean
 import pandas as pd
 import statsmodels.stats.api as sms
 from scipy import stats as sc
-#from causalimpact import CausalImpact
+from causalimpact import CausalImpact
 from statsmodels.formula.api import ols
 from PIL import Image
 import statistics
@@ -122,6 +122,21 @@ elif choice=='Stat Base Measurement':
         st.pyplot()
         cuped_t_test = engine.t_distribution_ci(cuped_df,test_flag='Variant',control='control',test='test',metric='page_views',period='CUPED',alpha=0.05)
         st.write(cuped_t_test)
+    elif METHOD =='Pre (Test) Vs Post(Test)':
+            #figsize = (20, 6)
+            ci = CausalImpact(pre_post_data, pre_period, post_period)
+            print(ci.summary())
+            print(ci.summary(output='report'))
+            pre_post_report = ci.summary_data
+            pre_post_report['p_value'] = ci.p_value
+            pre_post_report['siginificance'] = np.where(pre_post_report['p_value']>0.1,'Not Significant','Significant')
+            st.subheader('Causal Inference Analysis')
+            ci.plot()
+            st.pyplot()
+            st.subheader('Causal Inference statistical output')
+            st.write(ci.summary(output='report'))
+            st.dataframe(pre_post_report)
+            
 
            
     
