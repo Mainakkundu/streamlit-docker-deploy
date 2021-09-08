@@ -225,8 +225,8 @@ class StatsEngine():
 
     
     def CUPED(self,KPI):
-        pre_experiment_KPI = 'pre_' + KPI
-        KPI = 'post_'+KPI
+        pre_experiment_KPI = 'pre_page_views'
+        KPI = 'page_views'
         covariance = np.cov(self.df[KPI], self.df[pre_experiment_KPI])
         variance = np.cov(self.df[pre_experiment_KPI])
         theta_calc = covariance / variance

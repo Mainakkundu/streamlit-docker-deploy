@@ -45,8 +45,8 @@ y[70:] += 5
 pre_post_data = pd.DataFrame({'y': y, 'X': X}, columns=['y', 'X']) ###3
 pre_period = [0, 69]
 post_period = [70, 99]
-st.title("""AB-Testing Tool """)
 
+st.title("""AB-Testing Tool """)
 print('======================================================')
 print('----------- Sample Size Estimation--------------------')
 print('======================================================')
@@ -71,32 +71,57 @@ elif choice=='Stat Base Measurement':
     st.write(df.head())
     METRIC  = st.sidebar.selectbox('Choose the metric', ['page_views'])
     METHOD = st.sidebar.selectbox('Choose the method', ['Post (Control) Vs Post (Test)','Pre (Test) Vs Post(Test)','CUPED','Post (Control) Vs Post (Test) NonParametric'])
-    test = df[df['Variant']=='test']
-    control = df[df['Variant']=='control']
-    plt.figure()
-    ax1 = sns.distplot(test[METRIC],hist=False,kde=True)
-    ax2 = sns.distplot(control[METRIC],hist=False,kde=True)
-    plt.legend(labels=['TEST','CONTROL'])
-    st.subheader('Distribution Comparison(Density Plot)')
-    st.pyplot()
-    sns.boxplot(data=[test[METRIC],control[METRIC]],showmeans=True)
-    st.subheader('Distribution Comparison(Box Plot)')
-    st.pyplot()
-    print('--Step-2:T-Test for Mean Comparison--')
-    st.subheader('Mean comparison between Test & Control Distribution using  T-Test')
-    engine = utility.StatsEngine(df=df)
-    t_test = engine.t_distribution_ci(df,test_flag='Variant',control='control',test='test',metric=METRIC,period='post',alpha=0.05)
-    st.dataframe(t_test)
-    if t_test['p-value'].iloc[0] > 0.1:
-        st.markdown('''### Inference ''')
-        st.write('''According to the null hypothesis, there is no difference between the means.
-        The plot above shows the distribution of the difference of the means that
-        we would expect under the null hypothesis.''')
-    else:
-        st.markdown('''### Inference ''')
-        st.write('''According to the null hypothesis, there is siginificant difference between the means.
-        The plot above shows the distribution of the difference of the means that
-        we would expect under the null hypothesis.''')
+    engine = utility.StatsEngine(df=df) ## intantiate the class 
+    if METHOD == 'Post (Control) Vs Post (Test)':
+        test = df[df['Variant']=='test']
+        control = df[df['Variant']=='control']
+        plt.figure()
+        ax1 = sns.distplot(test[METRIC],hist=False,kde=True)
+        ax2 = sns.distplot(control[METRIC],hist=False,kde=True)
+        plt.axvline(np.mean(test[METRIC]), color='b', linestyle='dashed', label='TEST',linewidth=5)
+        plt.axvline(np.mean(control[METRIC]), color='orange', linestyle='dashed',label='CONTROL', linewidth=5)
+        plt.legend(labels=['TEST','CONTROL'])
+        st.subheader('Distribution Comparison(Density Plot)')
+        st.pyplot()
+        sns.boxplot(data=[test[METRIC],control[METRIC]],showmeans=True)
+        st.subheader('Distribution Comparison(Box Plot)')
+        st.pyplot()
+        print('--Step-2:T-Test for Mean Comparison--')
+        st.subheader('Mean comparison between Test & Control Distribution using  T-Test')
+        
+        t_test = engine.t_distribution_ci(df,test_flag='Variant',control='control',test='test',metric=METRIC,period='post',alpha=0.05)
+        st.dataframe(t_test)
+        if t_test['p-value'].iloc[0] > 0.1:
+            st.markdown('''### Inference ''')
+            st.write('''According to the null hypothesis, there is no difference between the means.
+            The plot above shows the distribution of the difference of the means that
+            we would expect under the null hypothesis.''')
+        else:
+            st.markdown('''### Inference ''')
+            st.write('''According to the null hypothesis, there is siginificant difference between the means.
+            The plot above shows the distribution of the difference of the means that
+            we would expect under the null hypothesis.''')
+    elif METHOD == 'CUPED':
+        pre_data = df['page_views'].values
+        post_data = df['pre_page_views'].values
+        cor_df = df[['page_views','pre_page_views']].corr()
+        st.subheader('How Pre-Experiment data bias on Post-period Metric {Correlation-Plot}')
+        #sns.set(rc={'figure.figsize':(9.7,8.27)})
+        sns.jointplot(df['page_views'],df['pre_page_views'],kind="reg")
+        st.pyplot()
+        cuped_df=  engine.CUPED(KPI='page_views')
+        test_cuped = cuped_df[cuped_df['Variant']=='test']
+        control_cuped = cuped_df[cuped_df['Variant']=='control']
+        plt.figure()
+        ax1 = sns.distplot(test_cuped['CUPED-adjusted_metric'],hist=False,kde=True)
+        ax2 = sns.distplot(control_cuped['CUPED-adjusted_metric'],hist=False,kde=True)
+        plt.axvline(np.mean(test_cuped['CUPED-adjusted_metric']), color='b', linestyle='dashed', label='TEST',linewidth=5)
+        plt.axvline(np.mean(control_cuped['CUPED-adjusted_metric']), color='orange', linestyle='dashed',label='CONTROL', linewidth=5)
+        plt.legend(labels=['TEST','CONTROL'])
+        st.subheader('CUPED-Distribution Comparison(Density Plot) after removing variance ')
+        st.pyplot()
+        cuped_t_test = engine.t_distribution_ci(cuped_df,test_flag='Variant',control='control',test='test',metric='page_views',period='CUPED',alpha=0.05)
+        st.write(cuped_t_test)
 
            
     
