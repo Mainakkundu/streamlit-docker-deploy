@@ -19,9 +19,9 @@ from PIL import Image
 import statistics
 import numpy as np
 warnings.filterwarnings("ignore")
-rcParams['figure.figsize'] = 20,10
-rcParams['font.size'] = 30
-sns.set()
+#rcParams['figure.figsize'] = 20,10
+#rcParams['font.size'] = 30
+#sns.set()
 #np.random.seed(8)
 
 
