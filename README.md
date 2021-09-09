@@ -7,8 +7,7 @@ This app focous on only continious KPI.
 1. Sample Size Estimation: This is the tab for pre-experiment analysis, where you can input base-mean,base-standard-deviation,average-traffic on your websites or store, and incremental lift you are anticipating and it will throw you the required sample size and duration for a test to go live. 
 
 2. Stat Base Measurement: In this tab, you can measure the Test results is it significant or not.
-
-It can measure with 3 views:
+  It can measure with 3 views:
   A.Control Vs Test: Measuring the incrementality between Test & Control group using T-Test and also tied the Confidence Intervals and p-value for significance. 
   
   B.CUPED: Microsoft's approach to reducing the variance and increase the power of the test using pre-experiment data. Much more applicable if a metric is highly correlated with pre-behavior. 
