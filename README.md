@@ -1,4 +1,4 @@
-# streamlit-docker-deploy
+# A/B Test Stat Engine - Streamlit App 
 
 Streamlit App for measuring the effectiveness of A/B testing scenario in 3 different verticals.
 This app focous on only continious KPI.
